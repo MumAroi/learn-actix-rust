@@ -34,18 +34,8 @@ impl MigrationTrait for Migration {
                             .extra("DEFAULT CURRENT_TIMESTAMP")
                             .null(),
                     )
-                    .col(
-                        ColumnDef::new(User::UpdatedAt)
-                            .timestamp()
-                            .extra("DEFAULT CURRENT_TIMESTAMP")
-                            .null(),
-                    )
-                    .col(
-                        ColumnDef::new(User::DeletedAt)
-                            .timestamp()
-                            .extra("DEFAULT CURRENT_TIMESTAMP")
-                            .null(),
-                    )
+                    .col(ColumnDef::new(User::UpdatedAt).timestamp().null())
+                    .col(ColumnDef::new(User::DeletedAt).timestamp().null())
                     .to_owned(),
             )
             .await
