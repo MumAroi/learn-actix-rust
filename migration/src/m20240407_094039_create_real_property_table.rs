@@ -27,6 +27,9 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(RealProperty::Long).string().null())
                     .col(ColumnDef::new(RealProperty::OpenedAt).timestamp().null())
                     .col(ColumnDef::new(RealProperty::OrganizeId).integer().null())
+                    .col(ColumnDef::new(RealProperty::CreatedBy).integer().null())
+                    .col(ColumnDef::new(RealProperty::UpdatedBy).integer().null())
+                    .col(ColumnDef::new(RealProperty::DeletedBy).integer().null())
                     .col(
                         ColumnDef::new(RealProperty::CreatedAt)
                             .timestamp()
@@ -59,6 +62,9 @@ enum RealProperty {
     Long,
     OpenedAt,
     OrganizeId,
+    CreatedBy,
+    UpdatedBy,
+    DeletedBy,
     CreatedAt,
     UpdatedAt,
     DeletedAt,
