@@ -24,7 +24,6 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(RealProperty::Images).text().null())
                     .col(ColumnDef::new(RealProperty::Lat).string().null())
                     .col(ColumnDef::new(RealProperty::Long).string().null())
-                    .col(ColumnDef::new(RealProperty::Long).string().null())
                     .col(ColumnDef::new(RealProperty::OpenedAt).timestamp().null())
                     .col(ColumnDef::new(RealProperty::OrganizeId).integer().null())
                     .col(ColumnDef::new(RealProperty::CreatedBy).integer().null())
