@@ -16,6 +16,10 @@ async fn manual_hello() -> impl Responder {
 
 #[actix_web::main]
 pub async fn main() -> std::io::Result<()> {
+    std::env::set_var("RUST_LOG", "debug");
+
+    dotenvy::dotenv().ok();
+
     HttpServer::new(|| {
         App::new()
             .service(hello)
