@@ -44,7 +44,7 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(DeriveIden)]
-enum Organize {
+pub enum Organize {
     Table,
     Id,
     Name,
