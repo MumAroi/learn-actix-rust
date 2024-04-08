@@ -1,6 +1,10 @@
 use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
-use core::config::AppConfig;
-use migration::{Migrator, MigratorTrait};
+use core::config::get_config;
+use migration::{
+    sea_orm::{ConnectOptions, Database},
+    Migrator, MigratorTrait,
+};
+use secrecy::ExposeSecret;
 mod core;
 
 #[get("/")]
@@ -23,12 +27,13 @@ pub async fn main() -> std::io::Result<()> {
 
     dotenvy::dotenv().ok();
 
-    let config: AppConfig = AppConfig::default();
+    let config = get_config().expect("Failed to read configuration.");
 
-    let db = match core::config::connect(&config).await {
-        Ok(db) => db,
-        Err(err) => panic!("{}", err),
-    };
+    let mut opts = ConnectOptions::new(&*config.database.connection_string().expose_secret());
+    opts.sqlx_logging(false);
+    let db = Database::connect(&*config.database.connection_string().expose_secret())
+        .await
+        .unwrap();
 
     match Migrator::up(&db, None).await {
         Err(err) => panic!("{}", err),
@@ -42,7 +47,7 @@ pub async fn main() -> std::io::Result<()> {
             .route("/hey", web::get().to(manual_hello))
             .app_data(db.clone())
     })
-    .bind(("127.0.0.1", 8080))?
+    .bind(("127.0.0.1", config.app_port))?
     .run()
     .await
 }

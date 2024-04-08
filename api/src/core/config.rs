@@ -1,40 +1,60 @@
-use migration::{
-    sea_orm::{ConnectOptions, Database, DatabaseConnection},
-    DbErr,
-};
+use secrecy::{ExposeSecret, Secret};
+use std::env;
+// use serde::Deserialize;
 
+// #[derive(Deserialize)]
 pub struct AppConfig {
+    pub database: DatabaseConfig,
+    pub app_port: u16,
+}
+
+// #[derive(Deserialize)]
+pub struct DatabaseConfig {
     db_host: String,
     db_port: String,
     db_username: String,
-    db_password: String,
+    db_password: Secret<String>,
     db_database: String,
-    jwt_secret: String,
 }
 
-impl Default for AppConfig {
-    fn default() -> Self {
-        Self {
-            db_host: std::env::var("DB_HOST").unwrap_or("127.0.0.1".to_string()),
-            db_port: std::env::var("DB_PORT").unwrap_or("3306".to_string()),
-            db_username: std::env::var("DB_USERNAME").unwrap_or("root".to_string()),
-            db_password: std::env::var("DB_PASSWORD").unwrap_or("332211".to_string()),
-            db_database: std::env::var("DB_DATABASE").unwrap_or("bookstore".to_string()),
-            jwt_secret: std::env::var("JWT_SECRET")
-                .expect("Please set the secret key in the .env file"),
-        }
+impl DatabaseConfig {
+    pub fn connection_string(&self) -> Secret<String> {
+        dbg!(format!(
+            "postgres://{}:{}@{}:{}/{}",
+            self.db_username,
+            self.db_password.expose_secret(),
+            self.db_host,
+            self.db_port,
+            self.db_database
+        ));
+        Secret::new(format!(
+            "postgres://{}:{}@{}:{}/{}",
+            self.db_username,
+            self.db_password.expose_secret(),
+            self.db_host,
+            self.db_port,
+            self.db_database
+        ))
     }
 }
 
-pub async fn connect(config: &AppConfig) -> Result<DatabaseConnection, DbErr> {
-    dbg!(format!(
-        "postgres://{}:{}@{}:{}/{}",
-        config.db_username, config.db_password, config.db_host, config.db_port, config.db_database
-    ));
-    let mut opts = ConnectOptions::new(format!(
-        "postgres://{}:{}@{}:{}/{}",
-        config.db_username, config.db_password, config.db_host, config.db_port, config.db_database
-    ));
-    opts.sqlx_logging(false);
-    Database::connect(opts).await
+pub fn get_config() -> Result<AppConfig, dotenvy::Error> {
+    let db_host = env::var("DB_HOST").expect("DATABASE_HOST is not set in .env file");
+    let db_port = env::var("DB_PORT").expect("DATABASE_PORT is not set in .env file");
+    let db_port = db_port.parse().expect("DATABASE_PORT is not a number");
+    let db_name = env::var("DB_NAME").expect("DATABASE_NAME is not set in .env file");
+    let db_username = env::var("DB_USERNAME").expect("DATABASE_USERNAME is not set in .env file");
+    let db_password = env::var("DB_PASSWORD").expect("DATABASE_PASSWORD is not set in .env file");
+    let app_port = env::var("APPLICATION_PORT").expect("APPLICATION_PORT is not set in .env file");
+    let app_port = app_port.parse().expect("APPLICATION_PORT is not a number");
+    Ok(AppConfig {
+        database: DatabaseConfig {
+            db_username,
+            db_password: Secret::new(db_password),
+            db_host,
+            db_port,
+            db_database: db_name,
+        },
+        app_port,
+    })
 }

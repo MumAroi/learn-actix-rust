@@ -9,3 +9,5 @@ actix-web = "4"
 dotenvy = "0.15.7"
 migration = { path = "../migration" }
 validator = { version = "0.18.0", features = ["derive"] } 
+secrecy = { version = "0.8.0", features = ["serde"] }
+serde = { version = "1.0.197", features = ["derive"] }
