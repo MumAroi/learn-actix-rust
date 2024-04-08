@@ -6,6 +6,7 @@ use std::env;
 pub struct AppConfig {
     pub database: DatabaseConfig,
     pub app_port: u16,
+    pub jwt_secret: Secret<String>,
 }
 
 // #[derive(Deserialize)]
@@ -19,14 +20,14 @@ pub struct DatabaseConfig {
 
 impl DatabaseConfig {
     pub fn connection_string(&self) -> Secret<String> {
-        dbg!(format!(
-            "postgres://{}:{}@{}:{}/{}",
-            self.db_username,
-            self.db_password.expose_secret(),
-            self.db_host,
-            self.db_port,
-            self.db_database
-        ));
+        // dbg!(format!(
+        //     "postgres://{}:{}@{}:{}/{}",
+        //     self.db_username,
+        //     self.db_password.expose_secret(),
+        //     self.db_host,
+        //     self.db_port,
+        //     self.db_database
+        // ));
         Secret::new(format!(
             "postgres://{}:{}@{}:{}/{}",
             self.db_username,
@@ -47,6 +48,7 @@ pub fn get_config() -> Result<AppConfig, dotenvy::Error> {
     let db_password = env::var("DB_PASSWORD").expect("DATABASE_PASSWORD is not set in .env file");
     let app_port = env::var("APPLICATION_PORT").expect("APPLICATION_PORT is not set in .env file");
     let app_port = app_port.parse().expect("APPLICATION_PORT is not a number");
+    let jwt_secret = env::var("JWT_SECRET").expect("JWT_SECRET is not set in .env file");
     Ok(AppConfig {
         database: DatabaseConfig {
             db_username,
@@ -56,5 +58,6 @@ pub fn get_config() -> Result<AppConfig, dotenvy::Error> {
             db_database: db_name,
         },
         app_port,
+        jwt_secret: jwt_secret.into()
     })
 }

@@ -1,3 +1,3 @@
 fn main() {
-    learn_actix_api::main();
+    let _ = learn_actix_api::main();
 }

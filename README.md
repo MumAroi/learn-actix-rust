@@ -13,5 +13,5 @@ sea-orm-cli migrate generate create_real_property_table
 ```
 
 ```sh {"id":"01HTWFMKHYH4776NZY5WTP2D1X"}
-sea-orm-cli generate entity -o entity/src -u postgres://looknow:332211@localhost:5432/rp_calendar
+sea-orm-cli generate entity -o entity/src -u postgres://looknow:332211@localhost:5432/rp_calendar --lib
 ```
