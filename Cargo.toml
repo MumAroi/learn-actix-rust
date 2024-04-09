@@ -5,7 +5,18 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [workspace]
-members = [".", "api", "migration", "entity"]
+members = [".", "migration", "entity"]
+
+[lib]
+path = "./src/lib.rs"
+name = "lib"
 
 [dependencies]
-learn-actix-api = { path = "api" }
+actix-web = "4"
+dotenvy = "0.15.7"
+migration = { path = "./migration" }
+entity = { path = "./entity" }
+validator = { version = "0.18.0", features = ["derive"] }
+secrecy = { version = "0.8.0", features = ["serde"] }
+serde = { version = "1.0.197", features = ["derive"] }
+tokio = { version = "1.37.0", features = ["macros", "rt-multi-thread"] }
