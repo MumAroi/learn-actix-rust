@@ -2,13 +2,13 @@ use std::future::{ready, Ready};
 
 use actix_web::{
     dev::{forward_ready, Service, ServiceRequest, ServiceResponse, Transform},
-    Error,
+    Error, HttpMessage,
 };
 use futures_util::future::LocalBoxFuture;
 
 pub struct Authentication;
 
-impl<S, B> Transform<S, ServiceRequest> for Authentication  
+impl<S, B> Transform<S, ServiceRequest> for Authentication
 where
     S: Service<ServiceRequest, Response = ServiceResponse<B>, Error = Error>,
     S::Future: 'static,
@@ -42,8 +42,6 @@ where
     forward_ready!(service);
 
     fn call(&self, req: ServiceRequest) -> Self::Future {
-        println!("Hi from start. You requested: {}", req.path());
-
         let fut = self.service.call(req);
 
         Box::pin(async move {

@@ -18,6 +18,7 @@ pub fn run(listener: TcpListener, db: DbConn) -> Result<Server, std::io::Error> 
     let server = HttpServer::new(move || {
         App::new()
             .wrap(Logger::default())
+            // %a %t "%r" %s %b "%{Referer}i" "%{User-Agent}i" %T
             .wrap(Logger::new("%a %{User-Agent}i"))
             // Register your controllers below 👇
             .service(hello)
