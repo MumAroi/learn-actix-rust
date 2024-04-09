@@ -9,7 +9,6 @@ use std::net::TcpListener;
 #[tokio::main]
 pub async fn main() -> std::io::Result<()> {
     std::env::set_var("RUST_LOG", "debug");
-
     dotenvy::dotenv().ok();
 
     let config = get_config().expect("Failed to read configuration.");
