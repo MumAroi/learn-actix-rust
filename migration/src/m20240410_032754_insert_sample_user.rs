@@ -7,6 +7,7 @@ use sea_orm_migration::{
 };
 
 #[derive(DeriveMigrationName)]
+// pub struct Migration;
 pub struct Migration {
     user: user::ActiveModel,
 }
@@ -32,12 +33,36 @@ impl Default for Migration {
 impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         let db = manager.get_connection();
+        // user::ActiveModel {
+        //     username: Set("Admin".to_owned()),
+        //     first_name: Set(Some("Admin".to_string()).to_owned()),
+        //     last_name: Set(Some("Admin".to_string()).to_owned()),
+        //     password: Set(hash("44332211".to_string(), DEFAULT_COST).unwrap()),
+        //     created_at: Set(Some(Local::now().naive_local().to_owned())),
+        //     updated_at: Set(Some(Local::now().naive_local().to_owned())),
+        //     ..Default::default()
+        // }
+        // .to_owned()
+        // .insert(db)
+        // .await?;
         self.user.to_owned().insert(db).await?;
         Ok(())
     }
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         let db = manager.get_connection();
+        // user::ActiveModel {
+        //     username: Set("Admin".to_owned()),
+        //     first_name: Set(Some("Admin".to_string()).to_owned()),
+        //     last_name: Set(Some("Admin".to_string()).to_owned()),
+        //     password: Set(hash("44332211".to_string(), DEFAULT_COST).unwrap()),
+        //     created_at: Set(Some(Local::now().naive_local().to_owned())),
+        //     updated_at: Set(Some(Local::now().naive_local().to_owned())),
+        //     ..Default::default()
+        // }
+        // .to_owned()
+        // .delete(db)
+        // .await?;
         self.user.to_owned().delete(db).await?;
         Ok(())
     }
