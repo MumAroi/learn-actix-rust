@@ -1,22 +1,15 @@
-use actix_web::{post, web};
+use crate::{
+    modules::auth::{dto::sign_in::SignInDto, service},
+    shared::{errors::CustomError, responses::CustomResponse},
+};
+use actix_web::{post, web, HttpResponse};
 use sea_orm::DbConn;
 
-
-
-
-// #[post("/todos")]
-// pub async fn create_todo(
-//     db: web::Data<DbConn>,
-//     create_todo_dto: web::Json<CreateTodoDto>,
-// ) -> Result<CustomResponse, CustomError> {
-    // if let Err(e) = create_todo_dto.validate() {
-    //     println!("DOES IT WORK?");
-    //     return Err(CustomError::ValidationError { e });
-    // }
-    // let title = create_todo_dto.title.clone();
-    // let description = create_todo_dto.description.clone();
-    // let done = create_todo_dto.done;
-    // let resp = insert_todo(&conn, title.as_str(), description.as_str(), done).await?;
-    // Ok(resp)
-//     Ok(())
-// }
+#[post("/sign-in")]
+pub async fn sign_in(
+    db: web::Data<DbConn>,
+    sign_in_dto: web::Json<SignInDto>,
+) -> Result<HttpResponse, CustomError> {
+    let _ = service::sign_in(&db, &sign_in_dto).await;
+    Ok(HttpResponse::Ok().json(""))
+}

@@ -1,3 +1,3 @@
 pub mod dto;
-mod controller;
+pub mod controller;
 mod service;

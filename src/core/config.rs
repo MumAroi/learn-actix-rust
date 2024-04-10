@@ -58,6 +58,6 @@ pub fn get_config() -> Result<AppConfig, dotenvy::Error> {
             db_database: db_name,
         },
         app_port,
-        jwt_secret: jwt_secret.into()
+        jwt_secret: Secret::new(jwt_secret)
     })
 }
